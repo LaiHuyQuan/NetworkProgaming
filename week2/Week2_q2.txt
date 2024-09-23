@@ -1,0 +1,2 @@
+Server lắng nghe các kết nối từ client, nhận thông điệp từ client, và gửi phản hồi lại cho client.
+Client kết nối đến server thông qua địa chỉ IP và cổng đã định nghĩa, gửi một thông điệp "Hello from client" đến server, sau đó nhận phản hồi từ server và hiển thị nó.
