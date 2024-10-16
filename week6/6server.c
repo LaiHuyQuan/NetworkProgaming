@@ -8,7 +8,7 @@
 #define PORT 8080
 #define BUFFER_SIZE 100
 #define MAX_CLIENTS 10
-#define SECRET_KEY 'K' // Khóa để mã hóa
+#define SECRET_KEY 'K' 
 
 typedef struct {
     int socket;
@@ -17,7 +17,6 @@ typedef struct {
 
 Client clients[MAX_CLIENTS];
 
-// Hàm mã hóa và giải mã dữ liệu bằng XOR
 void xor_cipher(char *data, char key) {
     for (int i = 0; data[i] != '\0'; i++) {
         data[i] ^= key;
@@ -73,32 +72,27 @@ int main() {
             if (FD_ISSET(sd, &readfds)) {
                 valread = read(sd, buffer, BUFFER_SIZE - 1);
                 if (valread == 0) {
-                    // Client ngắt kết nối
                     sprintf(buffer, "%s đã rời phòng chat.\n", clients[i].username);
-                    // xor_cipher(buffer, SECRET_KEY); // Mã hóa trước khi gửi
+                    xor_cipher(buffer, SECRET_KEY); 
                     broadcast_message(buffer, sd);
                     printf("Tin nhắn gửi đi (mã hóa): %s\n", buffer);
                     close(sd);
                     remove_client(i);
                 } else {
                     buffer[valread] = '\0';
-                    // xor_cipher(buffer, SECRET_KEY); // Giải mã thông điệp nhận được
-
+                    xor_cipher(buffer, SECRET_KEY); 
                     if (strlen(clients[i].username) == 0) {
-                        // Nhận tên người dùng
-                        // xor_cipher(buffer, SECRET_KEY);
+                        xor_cipher(buffer, SECRET_KEY);
                         strncpy(clients[i].username, buffer, sizeof(clients[i].username) - 1);
                         clients[i].username[strcspn(clients[i].username, "\n")] = '\0';
                         sprintf(buffer, "%s đã tham gia phòng chat.\n", clients[i].username);
-                        // xor_cipher(buffer, SECRET_KEY); // Mã hóa trước khi gửi
+                        xor_cipher(buffer, SECRET_KEY); 
                         broadcast_message(buffer, sd);
                         printf("Tin nhắn gửi đi (mã hóa): %s\n", buffer);
                     } else {
-                        // Nhận tin nhắn kèm tên người dùng
                         char message_with_name[BUFFER_SIZE + 30];
-                        // xor_cipher(message_with_name, SECRET_KEY);
                         sprintf(message_with_name, "%s: %s", clients[i].username, buffer);
-                        // xor_cipher(message_with_name, SECRET_KEY); // Mã hóa trước khi gửi
+                        xor_cipher(message_with_name, SECRET_KEY);
                         broadcast_message(message_with_name, sd);
                         printf("Tin nhắn gửi đi (mã hóa): %s\n", message_with_name);
                     }
